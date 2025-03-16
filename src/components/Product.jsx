@@ -98,7 +98,7 @@ export const Product = () => {
                         </div>
                     </div>
                 </div>
-                <ProductTable products={products}/>
+                <ProductTable products={products} setProducts={setProducts} />
             </div>
         </>
     )
