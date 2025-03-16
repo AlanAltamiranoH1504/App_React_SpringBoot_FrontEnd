@@ -1,4 +1,5 @@
 import {useState} from "react";
+import axios from "axios";
 
 export const ProductTable = ({products, setProducts}) => {
 
@@ -8,10 +9,11 @@ export const ProductTable = ({products, setProducts}) => {
     const [idProducto, setIdProducto] = useState(null);
 
     const handleDelete = (id) => {
-        const productosActualizados = products.filter((producto) => {
-            return producto.id !== id;
-        });
-        setProducts(productosActualizados);
+        axios.delete(`http://localhost:8080/productos/${id}`).then((response) => {
+            setProducts(anteriores => anteriores.filter(producto => producto.id !== id));
+        }).catch((e) => {
+            console.log("ERROR: " + e)
+        })
     }
 
     const handleEdit = (id) => {
@@ -29,13 +31,21 @@ export const ProductTable = ({products, setProducts}) => {
     const handleEditForm = (e) => {
         e.preventDefault();
         const id = idProducto;
-        const productosActualizados = products.map((producto) => {
-            return producto.id === id ? {
-                ...producto, nombre: inputNombre, descripcion: inputDescripcion, precio: inputPrecio
-            } : producto
-        });
-        setProducts(productosActualizados);
-        setIdProducto(null);
+        const data = {
+            id,
+            nombre: inputNombre,
+            descripcion: inputDescripcion,
+            precio: inputPrecio,
+        }
+        axios.put(`http://localhost:8080/productos/${id}`, data).then((response) => {
+            setProducts((productosAnteriores) => {
+                return productosAnteriores.map((producto) => {
+                    return producto.id === id ? {...producto, ...data} : producto
+                });
+            })
+        }).catch((e) => {
+            console.log("Error: " + e);
+        })
     }
 
     return (

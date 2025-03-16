@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const listProductos = () =>{
     const initProducts = [
         {
@@ -27,4 +29,16 @@ export const listProductos = () =>{
     ];
 
     return initProducts;
+}
+
+const URL_BACK = 'http://localhost:8080';
+
+// End point findAll del servidor
+export const findAll = async () =>{
+    try {
+        const response = await axios.get(`${URL_BACK}/productos`);
+        return response;
+    }catch (e){
+        console.log("Error: " + e)
+    }
 }

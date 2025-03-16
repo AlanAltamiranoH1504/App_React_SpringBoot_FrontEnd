@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
-import {listProductos} from "../services/ProductoService.js";
+import {findAll, listProductos} from "../services/ProductoService.js";
 import {ProductTable} from "./ProductTable.jsx";
+import axios from "axios";
 
 export const Product = () => {
     const [products, setProducts] = useState([]);
@@ -9,9 +10,14 @@ export const Product = () => {
     const [inputPrecio, setInputPrecio] = useState("");
     const [inputDescripcion, setInputDescripcion] = useState("");
 
+    //Traemos los datos del servidor
+    const getProductos = async () => {
+        const result = await findAll();
+        setProducts(result.data._embedded.productoes)
+    }
+
     useEffect(() => {
-        const result = listProductos();
-        setProducts(result)
+        getProductos()
     }, []);
 
     //Funcion que recibe el contenido del formulario
@@ -24,7 +30,6 @@ export const Product = () => {
         }
 
         const nuevoProducto = {
-            id: Math.floor(Math.random() * 10),
             nombre: inputNombre,
             precio: inputPrecio,
             descripcion: inputDescripcion
@@ -33,7 +38,11 @@ export const Product = () => {
         setInputNombre("");
         setInputDescripcion("");
         setInputPrecio("");
-        setProducts([...products, nuevoProducto]);
+        axios.post("http://localhost:8080/productos", nuevoProducto).then((response) => {
+            setProducts(prevProducts => [...prevProducts, response.data]);
+        }).catch((e) => {
+            console.log("Error: " + e);
+        })
     }
 
     return (
@@ -98,7 +107,7 @@ export const Product = () => {
                         </div>
                     </div>
                 </div>
-                <ProductTable products={products} setProducts={setProducts} />
+                <ProductTable products={products} setProducts={setProducts}/>
             </div>
         </>
     )
