@@ -19,7 +19,7 @@ export const listProductos = () =>{
             descripcion: "Laptop de 16 pulgadas Gris"
         },
         {
-            id: 3,
+            id: 4,
             nombre: "Laptop Victus HP",
             precio: "25,000.00",
             descripcion: "Laptop de 17 pulgadas Negra"
